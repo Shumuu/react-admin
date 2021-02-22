@@ -1,21 +1,14 @@
 import * as React from 'react';
 import { FC, ReactElement, ReactNode } from 'react';
 import PropTypes from 'prop-types';
-import { Link, useLocation } from 'react-router-dom';
-import MuiTab from '@material-ui/core/Tab';
-import classnames from 'classnames';
-import {
-    FormGroupContextProvider,
-    useTranslate,
-    Record,
-    useFormGroup,
-} from 'ra-core';
+import { FormGroupContextProvider, Record } from 'ra-core';
 
 import FormInput from './FormInput';
+import { FormTabHeader } from './FormTabHeader';
 
 const hiddenStyle = { display: 'none' };
 
-const FormTab: FC<FormTabProps> = ({
+export const FormTab: FC<FormTabProps> = ({
     basePath,
     className,
     classes,
@@ -73,38 +66,6 @@ const FormTab: FC<FormTabProps> = ({
     return intent === 'header' ? renderHeader() : renderContent();
 };
 
-export const FormTabHeader = ({
-    classes,
-    label,
-    value,
-    icon,
-    className,
-    ...rest
-}) => {
-    const translate = useTranslate();
-    const location = useLocation();
-    const formGroup = useFormGroup(value);
-
-    return (
-        <MuiTab
-            label={translate(label, { _: label })}
-            value={value}
-            icon={icon}
-            className={classnames('form-tab', className, {
-                [classes.errorTabButton]:
-                    formGroup.invalid &&
-                    formGroup.touched &&
-                    location.pathname !== value,
-            })}
-            component={Link}
-            to={{ ...location, pathname: value }}
-            id={`tabheader-${value}`}
-            aria-controls={`tabpanel-${value}`}
-            {...rest}
-        />
-    );
-};
-
 FormTab.propTypes = {
     basePath: PropTypes.string,
     className: PropTypes.string,
@@ -137,10 +98,9 @@ export interface FormTabProps {
     path?: string;
     record?: Record;
     resource?: string;
+    syncWithLocation?: boolean;
     value?: string;
     variant?: 'standard' | 'outlined' | 'filled';
 }
 
 FormTab.displayName = 'FormTab';
-
-export default FormTab;
